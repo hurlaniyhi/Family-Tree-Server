@@ -70,5 +70,6 @@ const getUserOtherDetails = async (data) => {
 
 module.exports = {
     createUserQuery,
-    loginQuery
+    loginQuery,
+    getUserOtherDetails
 }

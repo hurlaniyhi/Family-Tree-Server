@@ -25,11 +25,41 @@ const createFamily = async(req) => {
     }
     
 }
-const fetchFamilies = async(req, res) => {
+const searchFamily = async (req) => {
+    var { phoneNumber, familyName, country, state, homeTown, userName, searchType } = req.body
+    var response;
 
+    try{
+        if(!searchType){
+            return { responseCode: "25", responseDescription: "Kindly provide search type" }
+        }
+    
+        if(searchType === '1'){
+            if(!phoneNumber){
+                return { responseCode: "25", responseDescription: "Kindly provide the phoneNumber to search with" }
+            }
+            response =  await familyQueries.searchFamilyByPhoneNumber(phoneNumber)
+            return response
+        }
+        if(searchType === '2'){
+            if(!familyName || !country || !state || !homeTown){
+                return { responseCode: "25", responseDescription: "Kindly provide required information to for creating a family" }
+            }
+            familyName = utility.capitalizer(familyName)
+            homeTown = utility.capitalizer(homeTown)
+            state = utility.capitalizer(state)
+            country = utility.capitalizer(country)
+            var queryData = { familyName, homeTown, country, state }
+            response = await familyQueries.searchFamilyByFamilyDetails(queryData)
+            return response
+        }
+    }
+    catch(err){
+        return { responseCode: '101', responseDescription: 'Something went wrong', exception: `${err} : from search family handler`}
+    }
 }
 
 module.exports = {
     createFamily,
-    fetchFamilies
+    searchFamily
 }

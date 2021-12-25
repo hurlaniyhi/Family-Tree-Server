@@ -9,4 +9,9 @@ router.post('/create-family', async (req,res) => {
     return res.send(response)
 })
 
+router.post('/search-family', async (req, res) => {
+    const response = await familyHandlers.searchFamily(req)
+    return res.send(response)
+})
+
 module.exports = router;
