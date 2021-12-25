@@ -12,7 +12,7 @@ const createUser = async (req) => {
             !firstName || !lastName, !email || !password || !fatherPhoneNo || !motherPhoneNo
             || !fatherName || !motherName || !address || !dateOfBirth || !gender || !phoneNumber || !familyId
         ){
-            return {responseCode: "400", responseDescription: "Kindly provide all required information"}
+            return { responseCode: "400", responseDescription: "Kindly provide all required information" }
         }
 
         firstName = utility.spaceRemover(utility.capitalizer(firstName))
@@ -39,14 +39,14 @@ const login = async (req) => {
 
     try{
         if(!phoneNumber || !password){
-            return {responseCode: "400", responseDescription: "Kindly provide all required information"}
+            return { responseCode: "400", responseDescription: "Kindly provide all required information" }
         }
 
         const response = await userQueries.loginQuery(req.body)
         return response
     }
     catch(err){
-        return { responseCode: '101', responseDescription: 'Something went wrong', exception: `${err} : from login handler`}
+        return { responseCode: '101', responseDescription: 'Something went wrong', exception: `${err} : from login handler` }
     }
 }
 

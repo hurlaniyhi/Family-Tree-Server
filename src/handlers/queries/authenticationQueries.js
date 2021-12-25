@@ -10,17 +10,17 @@ const createUserQuery = async (data) => {
     try{
         const userExistence = await User.findOne({phoneNumber: data.phoneNumber})
         if(userExistence){
-            return {responseCode: "59", responseDescription: "User already exists with this data"}
+            return { responseCode: "59", responseDescription: "User already exists with this data" }
         }
 
         const user = new User(data)
         await user.save()
         .then( doc => {
             const token = jwt.sign({userId: doc._id}, secretKey)
-            result = { responseCode: "00", responseDescription: "User successfully created", data: doc, token}
+            result = { responseCode: "00", responseDescription: "User successfully created", data: doc, token }
         })
         .catch(err => {
-            result = { responseCode: '25', responseDescription: 'Information could not be saved. Kindly try later', exception: `${err} : from create user query`}
+            result = { responseCode: '25', responseDescription: 'Information could not be saved. Kindly try later', exception: `${err} : from create user query` }
         })
 
         return result
@@ -34,7 +34,7 @@ const loginQuery = async (data) => {
     const user = await User.findOne({phoneNumber: data.phoneNumber})
     
     if(!user){
-        return {responseCode: "25", message: "Invalid username or password"}
+        return { responseCode: "25", responseDescription: "Invalid username or password" }
     }
 
     try{
@@ -44,11 +44,11 @@ const loginQuery = async (data) => {
 
         return {
             responseCode: "00", responseDescription: "Successfully logged in", token, 
-            data: {userData: user, familyMembers: otherData.familyMembers, familyData: otherData.familyData}
+            data: { userData: user, familyMembers: otherData.familyMembers, familyData: otherData.familyData }
         }
     }           
     catch(err){
-        return {responseCode: "101", message: "Invalid username or password", exception: `${err} : from login query`}
+        return { responseCode: "101", responseDescription: "Invalid username or password", exception: `${err} : from login query`}
     }  
 }
 
