@@ -4,6 +4,12 @@ const Family = mongoose.model("Family");
 const createFamilyQuery = async (data) => {
     const {familyName, homeTown, country, state} = data;
     var result;
+
+    const checkExistence = await Family.findOne({familyName, homeTown, country, state})
+    console.log({checkExistence: checkExistence})
+    if(checkExistence){
+      return { responseCode: "59", responseDescription: "Family already exists with this data", familyData: checkExistence }
+    }
     
     try{
         const family = new Family({

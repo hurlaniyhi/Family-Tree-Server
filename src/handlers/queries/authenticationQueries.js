@@ -15,9 +15,13 @@ const createUserQuery = async (data) => {
 
         const user = new User(data)
         await user.save()
-        .then( doc => {
+        .then( async doc => {
             const token = jwt.sign({userId: doc._id}, secretKey)
-            result = { responseCode: "00", responseDescription: "User successfully created", data: doc, token }
+            const otherData = await getUserOtherDetails(doc)
+            result = { 
+                responseCode: "00", responseDescription: "User successfully created", 
+                data: { userData: doc, familyMembers: otherData.familyMembers, familyData: otherData.familyData }, token 
+            }
         })
         .catch(err => {
             result = { responseCode: '25', responseDescription: 'Information could not be saved. Kindly try later', exception: `${err} : from create user query` }
