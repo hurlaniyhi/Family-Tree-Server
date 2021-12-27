@@ -43,7 +43,7 @@ const searchFamily = async (req) => {
         }
         if(searchType === '2'){
             if(!familyName || !country || !state || !homeTown){
-                return { responseCode: "25", responseDescription: "Kindly provide required information to for creating a family" }
+                return { responseCode: "25", responseDescription: "Kindly provide required information for creating a family" }
             }
             familyName = utility.capitalizer(familyName)
             homeTown = utility.capitalizer(homeTown)
@@ -51,6 +51,21 @@ const searchFamily = async (req) => {
             country = utility.capitalizer(country)
             var queryData = { familyName, homeTown, country, state }
             response = await familyQueries.searchFamilyByFamilyDetails(queryData)
+            return response
+        }
+        if(searchType === '3'){
+            if(!familyName){
+                return { responseCode: "25", responseDescription: "Kindly provide required a family name to search for" }
+            }
+            familyName = utility.capitalizer(familyName)
+            response = await familyQueries.searchByFamilyName_homeTown(familyName)
+            return response
+        }
+        if(searchType === '4'){
+            if(!userName){
+                return { responseCode: "25", responseDescription: "Kindly provide a name to search" }
+            }
+            response =  await familyQueries.searchUserFamilyByUsername(userName)
             return response
         }
     }
