@@ -68,8 +68,22 @@ const getUserOtherDetails = async (data) => {
     return result
 }
 
+const checkUserWithEmail = async (email) => {
+    try{
+        const user = await User.findOne({email})
+        if(!user){
+            return { responseCode: "25", responseDescription: "No user found with this email address" }
+        }
+        return user
+    }
+    catch(err){
+        return { responseCode: "101", responseDescription: "Something went wrong", exception: `${err} : from checkUserWithEmail query`}
+    }
+}
+
 module.exports = {
     createUserQuery,
     loginQuery,
-    getUserOtherDetails
+    getUserOtherDetails,
+    checkUserWithEmail
 }

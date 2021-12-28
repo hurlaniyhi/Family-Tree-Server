@@ -1,5 +1,6 @@
 var utility = require("../../providers/utility/utility")
 var userQueries = require("../queries/authenticationQueries")
+const helpers = require('../../providers/others/helpers')
 
 const createUser = async (req) => {
     var {
@@ -50,7 +51,31 @@ const login = async (req) => {
     }
 }
 
+const sendOtp = async (req) => {
+    const {email, emailType} = req.body
+    var response;
+    try{
+        if(!email || !emailType){
+            return { responseCode: "400", responseDescription: "Kindly provide all required information" }
+        }
+
+        if(emailType === "2"){ 
+            response = await userQueries.checkUserWithEmail(email)
+            if(response.responseCode === "25"){ 
+                return response
+            }
+        }
+
+        response = await helpers.sendMail(email)
+        return response
+    }
+    catch(err){
+        return { responseCode: '101', responseDescription: 'Something went wrong', exception: `${err} : from sendOtp handler` }
+    }
+}
+
 module.exports = {
     createUser,
-    login
+    login,
+    sendOtp
 }

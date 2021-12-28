@@ -14,4 +14,10 @@ router.post('/login', async(req, res) => {
     return res.send(response)
 })
 
+router.post('/send-otp', async(req, res) => {
+    const response = await authHandlers.sendOtp(req)
+    console.log({response})
+    return res.send(response)
+})
+
 module.exports = router;
