@@ -52,12 +52,14 @@ const login = async (req) => {
 }
 
 const sendOtp = async (req) => {
-    const {email, emailType} = req.body
+    var {email, emailType} = req.body
     var response;
     try{
         if(!email || !emailType){
             return { responseCode: "400", responseDescription: "Kindly provide all required information" }
         }
+
+        email = utility.spaceRemover(email)
 
         if(emailType === "2"){ 
             response = await userQueries.checkUserWithEmail(email)
@@ -74,8 +76,26 @@ const sendOtp = async (req) => {
     }
 }
 
+const changePassword = async (req) => {
+    var {email, password, phoneNumber} = req.body
+
+    try{
+        if(!phoneNumber || !password || !email){
+            return { responseCode: "400", responseDescription: "Kindly provide all required information" }
+        }
+
+        email = utility.spaceRemover(email)
+        const response = await userQueries.changePasswordQuery({email, password, phoneNumber})
+        return response
+    }
+    catch(err){
+        return { responseCode: '101', responseDescription: 'Something went wrong', exception: `${err} : from changePassword handler` }
+    }
+}
+
 module.exports = {
     createUser,
     login,
-    sendOtp
+    sendOtp,
+    changePassword
 }

@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const User = mongoose.model("User");
 const Family = mongoose.model("Family");
 const jwt = require("jsonwebtoken");
+const bcrypt = require('bcrypt')
 const  { secretKey } = require("../../config/constant")
 
 const createUserQuery = async (data) => {
@@ -81,9 +82,55 @@ const checkUserWithEmail = async (email) => {
     }
 }
 
+const changePasswordQuery = async (data) => {
+    var response;
+    try{
+        const user = await User.findOne({phoneNumber: data.phoneNumber, email: data.email})
+        if(!user){
+            return({responseCode: "25", responseDescription: "User is not found"})
+        }
+        
+        // await bcrypt.genSalt(10, async (err, salt) => {
+        //     await bcrypt.hash(data.password, salt, async (err, hash)=>{
+        //         console.log(hash)
+        //         const newpassword = hash
+        //         await User.findByIdAndUpdate({_id: user._id}, {     
+        //             $set: {
+        //                 password: newpassword
+        //             }
+        //         })
+        //         .then(doc => {
+        //             console.log({message:"successfully updated", user: doc})
+        //             response = {responseCode: "00", responseDescription: "success"}
+        //         })
+        //         .catch(err => {
+        //             console.log("error occured during update")
+        //             response = {responseCode: "59", responseDescription: "error occured while changing password", error: err}
+        //         })
+        //     })
+        // })
+
+        const salt = await bcrypt.genSalt(10)
+        const hash = await bcrypt.hash(data.password, salt)
+        console.log(hash)
+        const response = await User.findByIdAndUpdate({_id: user._id}, {     
+                        $set: {
+                            password: hash
+                        }
+                    })
+
+        console.log({myResponse: response})
+        return response;
+    }
+    catch(err){
+        return { responseCode: "101", responseDescription: "Something went wrong", exception: `${err} : from checkPasswordQuery query`}
+    }
+}
+
 module.exports = {
     createUserQuery,
     loginQuery,
     getUserOtherDetails,
-    checkUserWithEmail
+    checkUserWithEmail,
+    changePasswordQuery
 }

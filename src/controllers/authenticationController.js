@@ -20,4 +20,10 @@ router.post('/send-otp', async(req, res) => {
     return res.send(response)
 })
 
+router.post('/change-password', async(req, res) => {
+    const response = await authHandlers.changePassword(req)
+    console.log({response})
+    return res.send(response)
+})
+
 module.exports = router;
